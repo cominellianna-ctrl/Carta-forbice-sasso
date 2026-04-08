@@ -29,6 +29,10 @@
             width: 300px;
             margin-top: 20px;
             display: none;
+            margin: 0 auto;
+        }
+        #game-area {
+            display: none;
         }
         #streak, #result {
             font-size: 18px;
@@ -41,25 +45,44 @@
             cursor: pointer;
             display: none;
         }
+        #next-level-button {
+            margin-top: 20px;
+            padding: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+        }
+        #final-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <h1>Sfida il Dinosauro - Carta Forbice Sasso</h1>
     <p>Seleziona un livello per iniziare la sfida!</p>
 
-    <div class="game">
+    <div id="level-selection">
         <button class="level-button" onclick="startGame(1)">Livello 1</button>
         <button class="level-button" onclick="startGame(2)">Livello 2</button>
         <button class="level-button" onclick="startGame(3)">Livello 3</button>
     </div>
 
-    <div id="game-area" style="display: none;">
+    <div id="game-area">
         <div id="message"></div>
         <div>
-            <!-- Immagine del dinosauro -->
-            <center>
+            <!-- Immagine del dinosauro centrato -->
             <img id="dinosaur-image" src="https://static.vecteezy.com/ti/vettori-gratis/t1/15778571-tirannosauro-rex-vettore-illustrazione-t-rex-dinosauro-isolato-su-bianca-sfondo-vettoriale.jpg" alt="Dinosauro">
-        </center>
         </div>
         <div class="game-buttons">
             <button onclick="playRound('rock')">Sasso</button>
@@ -69,6 +92,11 @@
         <p id="result"></p>
         <p id="streak">Vittorie consecutive: 0</p>
         <p id="congratulations">Complimenti! Hai vinto 3 volte consecutive!</p>
+        <button id="next-level-button" onclick="nextLevel()">Vai al livello successivo</button>
+    </div>
+
+    <div id="final-message">
+        <p>Complimenti! Hai finito tutti i livelli!</p>
     </div>
 
     <script>
@@ -85,12 +113,22 @@
             document.getElementById("dinosaur-image").style.display = "block"; // Mostra il dinosauro
             document.getElementById("game-area").style.display = "block"; // Mostra il gioco
             document.querySelectorAll('.game-buttons button').forEach(button => button.style.display = 'inline-block'); // Mostra i pulsanti di gioco
+            document.getElementById("level-selection").style.display = "none"; // Nascondi la selezione del livello
+            document.getElementById("next-level-button").style.display = "none"; // Nascondi il pulsante per il livello successivo
+            document.getElementById("final-message").style.display = "none"; // Nascondi il messaggio finale
         }
 
         function playRound(playerChoice) {
             const choices = ['rock', 'paper', 'scissors'];
             const computerChoice = choices[Math.floor(Math.random() * choices.length)];
             let result = '';
+
+            // Traduzione delle scelte in italiano
+            const choiceMap = {
+                rock: 'Sasso',
+                paper: 'Carta',
+                scissors: 'Forbice'
+            };
 
             if (playerChoice === computerChoice) {
                 result = "Pareggio!";
@@ -101,14 +139,33 @@
                 streak++;
                 if (streak === 3) {
                     document.getElementById("congratulations").style.display = "block"; // Mostra il messaggio di congratulazioni
+                    showNextLevelButton();
                 }
             } else {
                 result = "Hai perso!";
                 streak = 0; // Reset delle vittorie consecutive
             }
 
-            document.getElementById("result").textContent = `Il dinosauro ha scelto: ${computerChoice}. ${result}`;
+            document.getElementById("result").textContent = `Il dinosauro ha scelto: ${choiceMap[computerChoice]}. ${result}`;
             document.getElementById("streak").textContent = `Vittorie consecutive: ${streak}`;
+        }
+
+        function showNextLevelButton() {
+            // Mostra il pulsante per andare al livello successivo
+            document.getElementById("next-level-button").style.display = "inline-block";
+        }
+
+        function nextLevel() {
+            if (currentLevel < 3) {
+                startGame(currentLevel + 1);
+            } else {
+                showFinalMessage(); // Mostra il messaggio finale quando si arriva al livello 3
+            }
+        }
+
+        function showFinalMessage() {
+            document.getElementById("game-area").style.display = "none"; // Nasconde il gioco
+            document.getElementById("final-message").style.display = "flex"; // Mostra il messaggio finale
         }
     </script>
 </body>

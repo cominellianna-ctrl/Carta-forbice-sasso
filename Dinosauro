@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carta Forbice Sasso - Sfida il Dinosauro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            text-align: center;
+        }
+        .game {
+            margin-top: 20px;
+        }
+        .level-button {
+            margin: 10px;
+            padding: 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #congratulations {
+            color: green;
+            font-size: 20px;
+            font-weight: bold;
+            display: none;
+        }
+        #dinosaur-image {
+            width: 300px;
+            margin-top: 20px;
+            display: none;
+        }
+        #streak, #result {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .game-buttons button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sfida il Dinosauro - Carta Forbice Sasso</h1>
+    <p>Seleziona un livello per iniziare la sfida!</p>
+
+    <div class="game">
+        <button class="level-button" onclick="startGame(1)">Livello 1</button>
+        <button class="level-button" onclick="startGame(2)">Livello 2</button>
+        <button class="level-button" onclick="startGame(3)">Livello 3</button>
+    </div>
+
+    <div id="game-area" style="display: none;">
+        <div id="message"></div>
+        <div>
+            <!-- Immagine del dinosauro -->
+            <img id="dinosaur-image" src="https://static.vecteezy.com/ti/vettori-gratis/t1/15778571-tirannosauro-rex-vettore-illustrazione-t-rex-dinosauro-isolato-su-bianca-sfondo-vettoriale.jpg" alt="Dinosauro">
+        </div>
+        <div class="game-buttons">
+            <button onclick="playRound('rock')">Sasso</button>
+            <button onclick="playRound('paper')">Carta</button>
+            <button onclick="playRound('scissors')">Forbice</button>
+        </div>
+        <p id="result"></p>
+        <p id="streak">Vittorie consecutive: 0</p>
+        <p id="congratulations">Complimenti! Hai vinto 3 volte consecutive!</p>
+    </div>
+
+    <script>
+        let currentLevel = 0;
+        let streak = 0;
+        let maxStreak = 0;
+
+        function startGame(level) {
+            currentLevel = level;
+            streak = 0;
+            document.getElementById("message").textContent = `Hai selezionato il Livello ${level}. Gioca!`;
+            document.getElementById("streak").textContent = "Vittorie consecutive: 0";
+            document.getElementById("congratulations").style.display = "none";
+            document.getElementById("dinosaur-image").style.display = "block"; // Mostra il dinosauro
+            document.getElementById("game-area").style.display = "block"; // Mostra il gioco
+            document.querySelectorAll('.game-buttons button').forEach(button => button.style.display = 'inline-block'); // Mostra i pulsanti di gioco
+        }
+
+        function playRound(playerChoice) {
+            const choices = ['rock', 'paper', 'scissors'];
+            const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+            let result = '';
+
+            if (playerChoice === computerChoice) {
+                result = "Pareggio!";
+            } else if ((playerChoice === 'rock' && computerChoice === 'scissors') ||
+                       (playerChoice === 'paper' && computerChoice === 'rock') ||
+                       (playerChoice === 'scissors' && computerChoice === 'paper')) {
+                result = "Hai vinto!";
+                streak++;
+                if (streak === 3) {
+                    document.getElementById("congratulations").style.display = "block"; // Mostra il messaggio di congratulazioni
+                }
+            } else {
+                result = "Hai perso!";
+                streak = 0; // Reset delle vittorie consecutive
+            }
+
+            document.getElementById("result").textContent = `Il dinosauro ha scelto: ${computerChoice}. ${result}`;
+            document.getElementById("streak").textContent = `Vittorie consecutive: ${streak}`;
+        }
+    </script>
+</body>
+</html>
